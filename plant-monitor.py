@@ -27,10 +27,14 @@ def take_moisture_measurement():
 def setup_logger():
     logger.setLevel(logging.DEBUG)
     logging_file = logging.FileHandler('plant-monitor.log')
+    logging_console = logging.StreamHandler()
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logging_file.setLevel(logging.DEBUG)
+    logging_console.setLevel(logging.DEBUG)
     logging_file.setFormatter(formatter)
+    logging_console.setFormatter(formatter)
     logger.addHandler(logging_file)
+    logger.addHandler(logging_console)
 
 
 if __name__ == '__main__':
