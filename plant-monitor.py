@@ -1,4 +1,5 @@
 import gpiozero
+import logging
 import warnings
 from time import sleep
 
@@ -6,6 +7,7 @@ warnings.filterwarnings('ignore')
 moisture_sensor = gpiozero.MCP3008(channel=0)
 sensor_power = gpiozero.DigitalOutputDevice(5)
 water_pump = gpiozero.DigitalOutputDevice(4, active_high=False)
+logger = logging.getLogger('plant-monitor')
 
 MOISTURE_THRESHOLD_LOW = 30.00
 MOISTURE_THRESHOLD_HIGH = 80.00
@@ -18,10 +20,21 @@ def take_moisture_measurement():
     sleep(0.02)
     value = moisture_sensor.value
     sensor_power.off()
+    logger.info('moisture measurement: {}'.format(value * 100))
     return value * 100
 
 
+def setup_logger():
+    logger.setLevel(logging.DEBUG)
+    logging_file = logging.FileHandler('plant-monitor.log')
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging_file.setLevel(logging.DEBUG)
+    logging_file.setFormatter(formatter)
+    logger.addHandler(logging_file)
+
+
 if __name__ == '__main__':
+    setup_logger()
     while True:
         # Take sensor measurement
         measurement = take_moisture_measurement()
@@ -29,6 +42,7 @@ if __name__ == '__main__':
         if measurement < MOISTURE_THRESHOLD_LOW:
             # if value is lower
             while take_moisture_measurement() < MOISTURE_THRESHOLD_HIGH:
+                logger.info('adding water')
                 # Turn pump on
                 water_pump.on()
                 # Wait for water to get to plant
@@ -37,5 +51,6 @@ if __name__ == '__main__':
                 water_pump.off()
                 # Wait for permeation time
                 sleep(10)
-            pass
+        else:
+            logger.info('watering not required')
         sleep(300)
