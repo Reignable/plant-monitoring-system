@@ -37,6 +37,10 @@ def setup_logger():
     logger.addHandler(logging_console)
 
 
+def minutes(x):
+    return x * 60
+
+
 if __name__ == '__main__':
     setup_logger()
     while True:
@@ -58,4 +62,4 @@ if __name__ == '__main__':
             #     sleep(10)
         else:
             logger.info('watering not required')
-        sleep(300)
+        sleep(minutes(30))
