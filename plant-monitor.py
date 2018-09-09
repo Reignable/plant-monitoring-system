@@ -44,17 +44,18 @@ if __name__ == '__main__':
         measurement = take_moisture_measurement()
         # Compare against threshold
         if measurement < MOISTURE_THRESHOLD_LOW:
+            logger.info('watering is required')
             # if value is lower
-            while take_moisture_measurement() < MOISTURE_THRESHOLD_HIGH:
-                logger.info('adding water')
-                # Turn pump on
-                water_pump.on()
-                # Wait for water to get to plant
-                sleep(1)
-                # Turn pump off
-                water_pump.off()
-                # Wait for permeation time
-                sleep(10)
+            # while take_moisture_measurement() < MOISTURE_THRESHOLD_HIGH:
+            #     logger.info('adding water')
+            #     # Turn pump on
+            #     water_pump.on()
+            #     # Wait for water to get to plant
+            #     sleep(1)
+            #     # Turn pump off
+            #     water_pump.off()
+            #     # Wait for permeation time
+            #     sleep(10)
         else:
             logger.info('watering not required')
         sleep(300)
